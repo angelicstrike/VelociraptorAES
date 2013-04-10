@@ -3,6 +3,7 @@ import pickle
 import socket
 import threading
 import time
+import sys
 
 class ConnectionThread(threading.Thread):
     def run(self):
@@ -11,9 +12,15 @@ class ConnectionThread(threading.Thread):
 
 	print pickle.loads(client.recv(1024))
 
-	for x in xrange(5):
-	    client.send("Hello, test #" +str(x)+ "\n")
-	    time.sleep(1)
+	for x in xrange(100):
+	    try:
+		client.send(sys.argv[x])
+	    except IndexError:
+		break
+
+	#for x in xrange(5):
+	#    client.send("Hello, test #" +str(x)+ "\n")
+	#    time.sleep(1)
 
 	client.close()
 

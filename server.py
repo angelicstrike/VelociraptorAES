@@ -4,7 +4,8 @@ import socket
 import threading
 
 randomList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-chosenList = pickle.dumps(randomList)
+#chosenList = pickle.dumps(randomList)
+chosenList = pickle.dumps("Hey, sup")
 
 class ClientThread(threading.Thread):
     def __init__(self, channel, details):
