@@ -5,7 +5,7 @@ import threading
 
 randomList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 #chosenList = pickle.dumps(randomList)
-chosenList = pickle.dumps("Hey, sup")
+chosenList = pickle.dumps("Connection established")
 
 class ClientThread(threading.Thread):
     def __init__(self, channel, details):
