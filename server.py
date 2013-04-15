@@ -16,7 +16,7 @@ class ClientThread(threading.Thread):
     def run(self):
 	print 'Received connection:', self.details [0]
 	self.channel.send(chosenList)
-	for x in xrange(5):
+	while True:
 	    print self.channel.recv(1024)
 	self.channel.close()
 	print 'Closed connection:', self.details [0]
