@@ -11,15 +11,15 @@ class ConnectionThread(threading.Thread):
 	client.connect(('localhost', 8000))
 
 	print pickle.loads(client.recv(1024))
-
+	
 	while True:
-	   a = raw_input("Send message: ")
-	   client.send(a)
+	    message = raw_input("Send message: ")
+	    client.send(message)
+	    client.close()
 	#for x in xrange(100):
 	    #try:
 		#client.send(sys.argv[x])
 	    #except IndexError:
 	#	break
-	client.close()
 
 ConnectionThread().start()
