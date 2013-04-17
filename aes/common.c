@@ -5,7 +5,7 @@
 
 unsigned int SubBytes(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS] state)
 {
-    
+        
 }
 
 unsigned int ShiftRows(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS])
