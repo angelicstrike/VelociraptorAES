@@ -6,8 +6,6 @@ using namespace std;
 #include "matt.cpp"
 int main()
 {
-    int i;
-    int j;
     unsigned char bytes[4][4] =
     { {0x00, 0x01, 0x02, 0x03},
       {0x04, 0x05, 0x06, 0x07},
@@ -22,7 +20,7 @@ int main()
 
     AESShiftRows16(*bytes);	
 
-    if (memcmp(&bytes[0][0], &bytesCheck[0][0], 16) == 0)
+    if (memcmp(*bytes, *bytesCheck, 16) == 0)
 	cout << "Success!\n";
 
 }
