@@ -3,22 +3,28 @@
 
 #include "aes.h"
 
-unsigned int SubBytes(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS] state)
+void SubBytes(unsigned int key, BYTE **state)//your issue
 {
     
 }
 
-unsigned int ShiftRows(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS])
+void ShiftRows(BYTE** state)//your issue, this is already done, i just have to move it to here :P
 {
 
 }
 
-unsigned int MixColumns(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS])
+void MixColumns(BYTE** state)//my issue
 {
-
+    int i, j, k;
+    for(i = 0; i < STATE_COLUMNS; i++)
+    {
+        for(j = 0; j < STATE_ROWS; j++)
+        {
+        }
+    }
 }
 
-unsigned int AddRoundKeys(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS])
+void AddRoundKeys(unsigned int key, BYTE** state)//my issue
 {
 
 }

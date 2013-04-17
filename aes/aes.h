@@ -2,18 +2,18 @@
 #define AES_H
 
 #define STATE_ROWS 4
-#define STATE_COLUMNS 6
+#define STATE_COLUMNS 8
 #define KEY_BYTES 32
-#define BLOCK_SIZE 16
 #define NUMBER_ROUNDS 14
+typedef unsigned char BYTE
 
-unsigned int SubBytes(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS] state);//need state and key and what else?
+void SubBytes(unsigned int key, BYTE **state);//need state and key and what else?
 
-unsigned int ShiftRows(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS] state);
+void ShiftRows(BYTE **state);
 
-unsigned int MixColumns(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS] state);
+void MixColumns(BYTE **state);
 
 //Generates round keys from the main key using Rijndael's key scheduler and the main key
-unsigned int AddRoundKeys(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS] state);
+void AddRoundKeys(unsigned int key, BYTE** state);
 
 #endif
