@@ -18,4 +18,9 @@ unsigned int MixColumns(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS
 
 }
 
+unsigned int AddRoundKeys(unsigned int key, unsigned int[STATE_ROWS][STATE_COLUMNS])
+{
+
+}
+
 #endif
