@@ -1,7 +1,9 @@
+#include "aes.h"
+#include "databoxes.h"
 #include "matt.h"
 
 //bytePtr needs to be a pointer to a pointer for a 2D array (like the state matrix we need), so **bytePtr
-void AESShiftRows16(unsigned char *bytePtr)
+void AESShiftRows16(BYTE *bytePtr)
 {
     // Each row needs to shift left by the corresponding values
     int offsets[4] = {0, 1, 2, 3};//This is superfluous, you can use
@@ -21,6 +23,6 @@ void AESShiftRows16(unsigned char *bytePtr)
     }
 }
 
-//I want to be able to just pass it the state matrix and for it to work
-//&bytePtr[0][0] means that you're dereferencing the bytePtr pointer (which is a point to a pointer) twice to get the value at [0][0],and then getting the address again, ie, making it a pointer again
-//*bytes
+void AESMixColumns(BYTE *bytePtr)
+{
+}

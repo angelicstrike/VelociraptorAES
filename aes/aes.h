@@ -5,7 +5,7 @@
 #define STATE_COLUMNS 8
 #define KEY_BYTES 32
 #define NUMBER_ROUNDS 14
-typedef unsigned char BYTE
+typedef unsigned char BYTE;
 
 void SubBytes(unsigned int key, BYTE **state);//need state and key and what else?
 
