@@ -26,17 +26,8 @@ int mixColumnsMult(BYTE *values, BYTE *mult)
     int returnVal = 0;
     for (int i = 0; i < 4; i++)
     {
-        if (mult[i] == 1)
-            returnVal ^= values[i];
-        else if (mult[i] == 2)
-            returnVal ^= values[i] << 1;
-        else if (mult[i] == 3)
-            returnVal ^= (values[i] << 1) ^ values[i];
-        else
-        {
-            cout << "Invalid Multiplier given for mix columns.\n";
-            return -1;
-        }
+        returnVal ^= (mult[i]&1)? values[i] :0;
+        returnVal ^= (mult[i]&2)? values[i]<<1 :0;
     }
     return returnVal;
 }
