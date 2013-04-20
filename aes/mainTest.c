@@ -3,5 +3,6 @@
 int main()
 {
     TestSubBytes();
+    TestKeyExpansion();
     return 0;
 }
