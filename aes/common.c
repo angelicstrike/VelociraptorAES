@@ -29,13 +29,20 @@ void ShiftRows(BYTE** state)
 void MixColumns(BYTE** state)
 {
 
-}
+}*/
 
-void AddRoundKeys(unsigned int key, BYTE** state)
+void AddRoundKeys(unsigned int keys[WORDS_OF_EXPANSION], BYTE state[STATE_ROWS][STATE_COLUMNS], int round)
 {
-
+    int i;
+    for(i = 0; i < STATE_COLUMNS; i++)
+    {
+        state[0][i] = state[0][i] ^ keys[round*STATE_COLUMNS + i];
+        state[1][i] = state[1][i] ^ keys[round*STATE_COLUMNS + i];
+        state[2][i] = state[2][i] ^ keys[round*STATE_COLUMNS + i];
+        state[3][i] = state[3][i] ^ keys[round*STATE_COLUMNS + i];
+    }
 }
-*/
+
 
 
 void KeyExpansion(unsigned int key[NUMBER_WORDS_KEY], unsigned int w[WORDS_OF_EXPANSION])

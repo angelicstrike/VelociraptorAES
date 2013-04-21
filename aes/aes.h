@@ -11,23 +11,16 @@ typedef unsigned char BYTE;
 typedef unsigned int WORD;
 
 
-/*
- * 
- */
-
-
 void SubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS]);
-void ShiftRows(BYTE **state);
-void MixColumns(BYTE **state);
-void AddRoundKeys(unsigned int key, BYTE** state);
+void ShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS]);
+void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS]);
+void AddRoundKeys(unsigned int key[WORDS_OF_EXPANSION], BYTE** state);
 
-/*Nk's value:
- * AES-128 --> 4
- * AES-192 --> 6
- * AES-256 --> 8
-*/
-void KeyExpansion(unsigned int key[KEY_BYTES], unsigned int word[WORDS_OF_EXPANSION]);
+void KeyExpansion(unsigned int key[KEY_BYTES], unsigned int word[WORDS_OF_EXPANSION], int round);
 unsigned int SubWord(unsigned int word);
 unsigned int RotWord(unsigned int word);
+
+void InvSubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS]);
+
 
 #endif
