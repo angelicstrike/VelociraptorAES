@@ -7,6 +7,7 @@
 
 void SubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    
     int i, j;
     unsigned char x, y;
     for(i = 0; i < STATE_COLUMNS; i++)
@@ -20,16 +21,46 @@ void SubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
     }
 }
 
-/*
-void ShiftRows(BYTE** state)
+void ShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    int row, col;
+    int temp[4];
+    for (row = 1; row < STATE_ROWS; row++)
+    {
+        for (col = 0; col < STATE_COLUMNS; col++)
+            temp[col] = state[row][col];
+
+        for (col = 0; col < STATE_COLUMNS; col++)
+            state[row][col] = temp[(col+row)%4];
+    }
+
 
 }
 
-void MixColumns(BYTE** state)
+void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    int row, col, i;
+    BYTE temp[4];
+    int mult[4];
 
-}*/
+    for (int col = 0; col < STATE_COLUMNS; col++)
+    {
+        for (row = 0; row < STATE_ROWS; row++)
+            temp[row] = state[row][col];
+
+        for (row = 0; row < STATE_ROWS; row++)
+        {
+            state[row][col] = 0;
+            for (i = 0; i < STATE_ROWS; i++)
+            {
+                if (colMixer[row][i]&1)
+                    state[row][col] ^= temp[i];
+                if (colMixer[row][i]&2)
+                    state[row][col] ^= temp[i]<<1;
+            }
+        }
+    }
+}
 
 void AddRoundKeys(unsigned int keys[WORDS_OF_EXPANSION], BYTE state[STATE_ROWS][STATE_COLUMNS], int round)
 {
