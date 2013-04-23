@@ -1,5 +1,4 @@
-#include "common.cc"
-#include "aesTest.cc"
+#include "aesTest.h"
 
 int main()
 {
@@ -7,5 +6,7 @@ int main()
     TestKeyExpansion();
     TestShiftRows();
     TestMixColumns();
+    TestInvSubBytes();
+
     return 0;
 }

@@ -2,7 +2,6 @@
 #define AES_TEST_H
 
 #include "aes.h"
-#include "common.cc"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,5 +12,6 @@ void TestKeyExpansion();
 void TestShiftRows();
 void TestMixColumns();
 
+void TestInvSubBytes();
 
 #endif

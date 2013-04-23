@@ -55,15 +55,14 @@ void TestKeyExpansion()
     };
 
 
-    //KeyExpansion(testKey, testExpansion);
-    printf("Key Expansion currently disabled\n");
+    KeyExpansion(testKey, testExpansion);
     int i;
 
     for(i = 0; i < 60; i++)
     {
         if(testExpansion[i] != testVector[i])
         {
-            puts("KeyExpansion has failed. We do not rewards failure.");
+            puts("KeyExpansion has failed. We do not reward failure.");
             return;
         }
     }
@@ -121,3 +120,44 @@ void TestMixColumns()
 
 }
 
+//since SubBytes and InvSubBytes are Inverses of each other,
+//they *should* cancel each other out and leave the state 
+//matrix in it's original form
+void TestInvSubBytes()
+{
+    BYTE testState[4][4] = {{0xF0, 0xc5, 0x56, 0x99},
+                            {0x00, 0xFF, 0x9C, 0x53},
+                            {0x66, 0x29, 0xAD, 0xCC},
+                            {0x45, 0xFA, 0xFD, 0x01}};
+
+    /*BYTE SubBytesState[4][4] = {{0x8C, 0xA6, 0xB1, 0xEE},i
+                                {0x63, 0x16, 0xDE, 0xED},
+                                {0x33, 0xA5, 0x95, 0x4B},
+                                {0x6E, 0x2D, 0x54, 0x7C}};
+    */
+    BYTE InvSubBytesState[4][4] = {{0x17, 0x07, 0xB9, 0xF9}, 
+                                   {0x52, 0x7D, 0x1C, 0x50}, 
+                                   {0xD3, 0x4C, 0x18, 0x27}, 
+                                   {0x68, 0x14, 0x21, 0x09}};
+
+    SubBytes(testState);
+    InvSubBytes(testState);
+    InvSubBytes(testState);
+    
+
+    int i, j;
+    for(i = 0; i < STATE_ROWS; i++)
+    {
+        for(j = 0; j < STATE_COLUMNS; j++)
+        {
+            if(testState[i][j] != InvSubBytesState[i][j])
+            {
+                printf("InvSubBytes has failed me for the last time. Executing it as an example to the others\n");
+                exit(1);
+            }
+        }
+    }
+
+    printf("InvSubBytes has passed the test.\n");
+
+}

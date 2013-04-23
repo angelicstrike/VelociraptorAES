@@ -1,6 +1,3 @@
-#ifndef AES_ENCRYPT_C
-#define AES_ENCRYPT_C
-
 #include "aes.h"
 #include "databoxes.h"
 
@@ -39,8 +36,5 @@ void encryt(BYTE in[STATE_ROWS][STATE_COLUMNS], BYTE out[STATE_ROWS][STATE_COLUM
 
     SubBytes(out);
     ShiftRows(out);
-    AddRoundKeys(expandedKeys, out, NUMBER_ROUNDS);
-
+    AddRoundKeys(expandedKeys, out, NUMBER_ROUNDS-1);
 }
-
-#endif

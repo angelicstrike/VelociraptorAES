@@ -1,6 +1,3 @@
-#ifndef COMMON_C
-#define COMMON_C
-
 #include "aes.h"
 #include "databoxes.h"
 #include <stdio.h>
@@ -41,9 +38,8 @@ void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
     int row, col, i;
     BYTE temp[4];
-    int mult[4];
 
-    for (int col = 0; col < STATE_COLUMNS; col++)
+    for (col = 0; col < STATE_COLUMNS; col++)
     {
         for (row = 0; row < STATE_ROWS; row++)
             temp[row] = state[row][col];
@@ -138,4 +134,18 @@ unsigned int RotWord(unsigned int word)
     return word; 
 }
 
-#endif
+void InvSubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
+{
+    int i, j;
+    unsigned char x,y;
+
+    for(i = 0; i < STATE_ROWS; i++)
+    {
+        for(j = 0; j < STATE_COLUMNS; j++)
+        {
+            x = (state[i][j] & 0xF0) >> 4;
+            y = (state[i][j] & 0x0F);
+            state[i][j] = inv_s[x][y];
+        }
+    }    
+}
