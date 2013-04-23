@@ -4,7 +4,6 @@
 
 void SubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
-    
     int i, j;
     unsigned char x, y;
     for(i = 0; i < STATE_COLUMNS; i++)
@@ -20,40 +19,93 @@ void SubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
 
 void ShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
-    int row, col;
     int temp[4];
-    for (row = 1; row < STATE_ROWS; row++)
+    for (int row = 1; row < STATE_ROWS; row++)
     {
-        for (col = 0; col < STATE_COLUMNS; col++)
+        for (int col = 0; col < STATE_COLUMNS; col++)
             temp[col] = state[row][col];
 
-        for (col = 0; col < STATE_COLUMNS; col++)
+        for (int col = 0; col < STATE_COLUMNS; col++)
             state[row][col] = temp[(col+row)%4];
     }
+}
 
+void InvShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS])
+{
+    int temp[4];
+    for (int row = 1; row < STATE_ROWS; row++)
+    {
+        for (int col = 0; col < STATE_COLUMNS; col++)
+            temp[col] = state[row][col];
 
+        for (int col = 0; col < STATE_COLUMNS; col++)
+            state[row][col] = temp[(col+(4-row))%4];
+    }
 }
 
 void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
-    int row, col, i;
     BYTE temp[4];
 
-    for (col = 0; col < STATE_COLUMNS; col++)
+    // AES chosen modulus when values exceed 255
+    int modulo = 1<<8 + 1<<4 + 1<<3 + 1<<1 + 1;
+
+    for (int col = 0; col < STATE_COLUMNS; col++)
     {
-        for (row = 0; row < STATE_ROWS; row++)
+        for (int row = 0; row < STATE_ROWS; row++)
             temp[row] = state[row][col];
 
-        for (row = 0; row < STATE_ROWS; row++)
+        for (int row = 0; row < STATE_ROWS; row++)
         {
-            state[row][col] = 0;
-            for (i = 0; i < STATE_ROWS; i++)
+            int result = 0;
+            for (int i = 0; i < STATE_ROWS; i++)
             {
-                if (colMixer[row][i]&1)
-                    state[row][col] ^= temp[i];
-                if (colMixer[row][i]&2)
-                    state[row][col] ^= temp[i]<<1;
+                if (ColMixer[row][i]&1)
+                    result ^= temp[i];
+                if (ColMixer[row][i]&2)
+                    result ^= (temp[i]<<1);
             }
+
+            if (result >= 1<<8)
+                result ^= modulo;
+
+            state[row][col] = result;
+        }
+    }
+}
+
+void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
+{
+    BYTE temp[4];
+    int mult[4];
+
+    // AES chosen modulus when values exceed 255
+    int modulo = 1<<8 + 1<<4 + 1<<3 + 1<<1 + 1;
+
+    for (int col = 0; col < STATE_COLUMNS; col++)
+    {
+        for (int row = 0; row < STATE_ROWS; row++)
+            temp[row] = state[row][col];
+
+        for (int row = 0; row < STATE_ROWS; row++)
+        {
+            int result = 0;
+            for (int i = 0; i < STATE_ROWS; i++)
+            {
+                if (InvColMixer[row][i]&1)
+                    result ^= temp[i];
+                if (InvColMixer[row][i]&2)
+                    result ^= temp[i]<<1;
+                if (InvColMixer[row][i]&4)
+                    result ^= temp[i]<<2;
+                if (InvColMixer[row][i]&8)
+                    result ^= temp[i]<<3;
+            }
+
+            if (result >= 1<<8)
+                result ^= modulo;
+
+            state[row][col] = result;
         }
     }
 }
@@ -69,8 +121,6 @@ void AddRoundKeys(unsigned int keys[WORDS_OF_EXPANSION], BYTE state[STATE_ROWS][
         state[3][i] = state[3][i] ^ keys[round*STATE_COLUMNS + i];
     }
 }
-
-
 
 void KeyExpansion(unsigned int key[NUMBER_WORDS_KEY], unsigned int w[WORDS_OF_EXPANSION])
 {
