@@ -1,10 +1,10 @@
-#include "common.cc"
-#include "aesTest.cc"
+#include "aes.h"
+#include "aesTest.h"
 
 int main()
 {
     TestSubBytes();
-    TestKeyExpansion();
+    //TestKeyExpansion();
     TestShiftRows();
     TestMixColumns();
     return 0;

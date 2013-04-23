@@ -20,6 +20,8 @@ void KeyExpansion(unsigned int key[KEY_BYTES], unsigned int word[WORDS_OF_EXPANS
 unsigned int SubWord(unsigned int word);
 unsigned int RotWord(unsigned int word);
 
+void InvShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS]);
+void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 void InvSubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 
 

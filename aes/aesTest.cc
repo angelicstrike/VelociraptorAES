@@ -79,17 +79,30 @@ void TestShiftRows()
       {0x08, 0x09, 0x0a, 0x0b},
       {0x0c, 0x0d, 0x0e, 0x0f} };
 
-    BYTE shiftCheck[4][4] =
+    BYTE ShiftCheck[4][4] =
     { {0x00, 0x01, 0x02, 0x03},
       {0x05, 0x06, 0x07, 0x04},
       {0x0a, 0x0b, 0x08, 0x09},
       {0x0f, 0x0c, 0x0d, 0x0e} };
 
+    BYTE unShiftCheck[4][4] =
+    { {0x00, 0x01, 0x02, 0x03},
+      {0x04, 0x05, 0x06, 0x07},
+      {0x08, 0x09, 0x0a, 0x0b},
+      {0x0c, 0x0d, 0x0e, 0x0f} };
+
+
     ShiftRows(bytes);	
-    if (memcmp(*bytes, *shiftCheck, 16) == 0)
+    if (memcmp(*bytes, *ShiftCheck, 16) == 0)
 	    printf("Shift Rows Success!\n");
     else
-        printf("Shift Rows Failure.\n");
+        printf("Shift Rows Failure. Inverse Should Now Fail.\n");
+
+    InvShiftRows(bytes);
+    if (memcmp(*bytes, *unShiftCheck, 16) == 0)
+        printf("Inverse Shift Rows success.\n");
+    else
+        printf("Inverse Shift Rows Failure.\n");
 
 }
 
@@ -101,7 +114,7 @@ void TestMixColumns()
       {0x0a, 0x0b, 0x08, 0x09},
       {0x0f, 0x0c, 0x0d, 0x0e} };
 
-    BYTE mixCheck[8] =
+    BYTE MixCheck[8] =
     {(0x00<<1)^(0x05<<1)^0x05^0x0a^0x0f, 
      (0x01<<1)^(0x06<<1)^0x06^0x0b^0x0c,
      (0x02<<1)^(0x07<<1)^0x07^0x08^0x0d,
@@ -112,12 +125,22 @@ void TestMixColumns()
      0x03^(0x04<<1)^(0x09<<1)^0x09^0x0e
      };
 
-    MixColumns(bytes);
+    BYTE unMixCheck[4][4] =
+    { {0x00, 0x01, 0x02, 0x03},
+      {0x05, 0x06, 0x07, 0x04},
+      {0x0a, 0x0b, 0x08, 0x09},
+      {0x0f, 0x0c, 0x0d, 0x0e} };
 
-    if (memcmp(*bytes, mixCheck, 8) == 0)
+    MixColumns(bytes);
+    if (memcmp(*bytes, MixCheck, 8) == 0)
         printf("Mix Columns Success! (Two Row Test)\n");
     else
-        printf("Mix Columns Failure.\n");
+        printf("Mix Columns Failure. Inverse should now fail too.\n");
 
+    InvMixColumns(bytes);
+    if (memcmp(*bytes, *unMixCheck, 16) == 0)
+        printf("Inverse Mix Columns Success!\n");
+    else
+        printf("Inverse Mix Columns Failure.\n");
 }
 
