@@ -14,4 +14,7 @@ void TestMixColumns();
 
 void TestInvSubBytes();
 
+void TestEncryption();
+void TestDecrypt();
+
 #endif

@@ -2,11 +2,12 @@
 
 int main()
 {
-    TestSubBytes();
+    /*TestSubBytes();
     TestKeyExpansion();
     TestShiftRows();
     TestMixColumns();
     TestInvSubBytes();
-
+*/
+    TestEncryption();
     return 0;
 }

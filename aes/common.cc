@@ -48,7 +48,7 @@ void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
     BYTE temp[4];
 
     // AES chosen modulus when values exceed 255
-    int modulo = 1<<8 + 1<<4 + 1<<3 + 1<<1 + 1;
+    int modulo = (1<<8) + (1<<4) + (1<<3) + (1<<1) + 1;
 
     for (int col = 0; col < STATE_COLUMNS; col++)
     {
@@ -77,10 +77,9 @@ void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
     BYTE temp[4];
-    int mult[4];
 
     // AES chosen modulus when values exceed 255
-    int modulo = 1<<8 + 1<<4 + 1<<3 + 1<<1 + 1;
+    int modulo = (1<<8) + (1<<4) + (1<<3) + (1<<1) + 1;
 
     for (int col = 0; col < STATE_COLUMNS; col++)
     {
@@ -110,7 +109,7 @@ void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
     }
 }
 
-void AddRoundKeys(unsigned int keys[WORDS_OF_EXPANSION], BYTE state[STATE_ROWS][STATE_COLUMNS], int round)
+void AddRoundKeys(WORD keys[WORDS_OF_EXPANSION], BYTE state[STATE_ROWS][STATE_COLUMNS], int round)
 {
     int i;
     for(i = 0; i < STATE_COLUMNS; i++)

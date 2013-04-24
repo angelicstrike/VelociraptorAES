@@ -14,7 +14,7 @@ typedef unsigned int WORD;
 void SubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 void ShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS]);
-void AddRoundKeys(unsigned int key[WORDS_OF_EXPANSION], BYTE** state, int round);
+void AddRoundKeys(WORD key[WORDS_OF_EXPANSION], BYTE state[STATE_ROWS][STATE_COLUMNS], int round);
 
 void KeyExpansion(unsigned int key[KEY_BYTES], unsigned int word[WORDS_OF_EXPANSION]);
 unsigned int SubWord(unsigned int word);
@@ -24,5 +24,6 @@ void InvShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 void InvSubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 
+void encryt(BYTE in[STATE_ROWS][STATE_COLUMNS], BYTE out[STATE_ROWS][STATE_COLUMNS], WORD cipherKey[NUMBER_WORDS_KEY]);
 
 #endif

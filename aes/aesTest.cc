@@ -184,3 +184,54 @@ void TestInvSubBytes()
     printf("InvSubBytes has passed the test.\n");
 
 }
+
+void TestEncryption()
+{
+    char* plainText = "00112233445566778899aabbccddeeff";
+    char* cipherKey = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+    char* cipherText = "8ea2b7ca516745bfeafc49904b496089";
+
+    char* pos = plainText;
+
+    BYTE state[STATE_ROWS][STATE_COLUMNS];
+    BYTE expandedKeys[STATE_ROWS][STATE_COLUMNS];
+    BYTE out[STATE_ROWS][STATE_COLUMNS];
+    WORD cipherKeyArray[NUMBER_WORDS_KEY];
+
+
+    for(int i = 0; i < STATE_ROWS; i++)
+    {
+        for(int j = 0; j < STATE_COLUMNS; j++)
+        {
+            sscanf(pos, "%02hhx", &state[j][i]);
+            pos += 2;
+        }
+    }
+
+    puts("\n");
+
+    pos = cipherKey;
+    for(int k = 0; k < NUMBER_WORDS_KEY; k++)
+    {
+        sscanf(pos, "%08x", &cipherKeyArray[k]);
+        pos += 8;
+    }
+
+    puts("\n");
+
+    encryt(state, out, cipherKeyArray);
+
+    for(int i = 0; i < STATE_ROWS; i++)
+    {
+        for(int j = 0; j < STATE_COLUMNS; j++)
+        {
+            printf("%x", out[j][i]);
+        }
+    }
+
+}
+
+void TestDecrypt()
+{
+
+}
