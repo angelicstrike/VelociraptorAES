@@ -32,7 +32,7 @@ void TestKeyExpansion()
 {
     unsigned int testExpansion[60];
 
-    unsigned int testKey[32] = 
+    BYTE testKey[32] = 
     {
         0x60, 0x3d, 0xeb, 0x10, 0x15, 0xca, 0x71, 0xbe, 0x2b, 0x73, 0xae, 0xf0, 0x85, 0x7d, 0x77, 0x81,
         0x1f, 0x35, 0x2c, 0x07, 0x3b, 0x61, 0x08, 0xd7, 0x2d, 0x98, 0x10, 0xa3, 0x09, 0x14, 0xdf, 0xf4
@@ -194,9 +194,8 @@ void TestEncryption()
     char* pos = plainText;
 
     BYTE state[STATE_ROWS][STATE_COLUMNS];
-    BYTE expandedKeys[STATE_ROWS][STATE_COLUMNS];
     BYTE out[STATE_ROWS][STATE_COLUMNS];
-    WORD cipherKeyArray[NUMBER_WORDS_KEY];
+    BYTE cipherKeyArray[KEY_BYTES];
 
 
     for(int i = 0; i < STATE_ROWS; i++)
@@ -208,18 +207,14 @@ void TestEncryption()
         }
     }
 
-    puts("\n");
-
     pos = cipherKey;
-    for(int k = 0; k < NUMBER_WORDS_KEY; k++)
+    for(int k = 0; k < KEY_BYTES; k++)
     {
-        sscanf(pos, "%08x", &cipherKeyArray[k]);
-        pos += 8;
+        sscanf(pos, "%02hhx", &cipherKeyArray[k]);
+        pos += 2;
     }
 
-    puts("\n");
-
-    encryt(state, out, cipherKeyArray);
+    encrypt(state, out, cipherKeyArray);
 
     for(int i = 0; i < STATE_ROWS; i++)
     {

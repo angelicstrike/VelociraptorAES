@@ -6,8 +6,7 @@ int main()
     TestKeyExpansion();
     TestShiftRows();
     TestMixColumns();
-    TestInvSubBytes();
-*/
+    TestInvSubBytes();*/
     TestEncryption();
     return 0;
 }

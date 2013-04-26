@@ -114,21 +114,21 @@ void AddRoundKeys(WORD keys[WORDS_OF_EXPANSION], BYTE state[STATE_ROWS][STATE_CO
     int i;
     for(i = 0; i < STATE_COLUMNS; i++)
     {
-        state[0][i] = state[0][i] ^ keys[round*STATE_COLUMNS + i];
-        state[1][i] = state[1][i] ^ keys[round*STATE_COLUMNS + i];
-        state[2][i] = state[2][i] ^ keys[round*STATE_COLUMNS + i];
-        state[3][i] = state[3][i] ^ keys[round*STATE_COLUMNS + i];
+        state[0][i] = state[0][i] ^ ((keys[round*STATE_COLUMNS + i] & 0xFF000000 ) >> 24);
+        state[1][i] = state[1][i] ^ ((keys[round*STATE_COLUMNS + i] & 0x00FF0000) >> 16);
+        state[2][i] = state[2][i] ^ ((keys[round*STATE_COLUMNS + i] & 0x0000FF00) >> 8);
+        state[3][i] = state[3][i] ^ (keys[round*STATE_COLUMNS + i] & 0x000000FF);
     }
 }
 
-void KeyExpansion(unsigned int key[NUMBER_WORDS_KEY], unsigned int w[WORDS_OF_EXPANSION])
+void KeyExpansion(BYTE key[NUMBER_WORDS_KEY], WORD w[WORDS_OF_EXPANSION])
 {
     unsigned int temp;
     int i = 0;
 
-    while(i < KEY_BYTES)
+    while(i < NUMBER_WORDS_KEY)
     {
-        w[i] = (key[4*i+3]) | (key[4*i+2] << 8) | (key[4*i+1] << 16) | (key[4*i] << 24);
+        w[i] = (key[(4*i)+3]) | (key[(4*i)+2] << 8) | (key[(4*i)+1] << 16) | (key[(4*i)] << 24);
         i += 1;
     }
 
@@ -151,7 +151,7 @@ void KeyExpansion(unsigned int key[NUMBER_WORDS_KEY], unsigned int w[WORDS_OF_EX
 
 }
 
-unsigned int SubWord(unsigned int word)
+unsigned int SubWord(WORD word)
 {
     BYTE temp, x, y;
     unsigned int newWord;
@@ -172,7 +172,7 @@ unsigned int SubWord(unsigned int word)
     return newWord;
 }
 
-unsigned int RotWord(unsigned int word)
+unsigned int RotWord(WORD word)
 {
     BYTE temp;
 
