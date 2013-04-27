@@ -187,16 +187,15 @@ void TestInvSubBytes()
 
 void TestEncryption()
 {
-    char* plainText = "00112233445566778899aabbccddeeff";
-    char* cipherKey = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
-    char* cipherText = "8ea2b7ca516745bfeafc49904b496089";
-
+    char* plainText = "00112233445566778899aabbccddeeff\0";
+    char* cipherKey = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f\0";
+    const char* const cipherAnswer = "8ea2b7ca516745bfeafc49904b496089";
     char* pos = plainText;
+    BYTE  encryptionOutput[32];
 
     BYTE state[STATE_ROWS][STATE_COLUMNS];
     BYTE out[STATE_ROWS][STATE_COLUMNS];
     BYTE cipherKeyArray[KEY_BYTES];
-
 
     for(int i = 0; i < STATE_ROWS; i++)
     {
@@ -220,10 +219,14 @@ void TestEncryption()
     {
         for(int j = 0; j < STATE_COLUMNS; j++)
         {
-            printf("%x", out[j][i]);
+            encryptionOutput[4*i + j] = out[j][i];
+            //for now, manually comparing the values, since cipherAnswer is somehow getting it's value
+            //changed on runtime.
+            //But hey, it matches the example given in the NIST documentation, so there's that
+            printf("%x", encryptionOutput[4*i + j]);
         }
     }
-
+    printf("\n");
 }
 
 void TestDecrypt()

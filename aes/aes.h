@@ -6,7 +6,7 @@
 #define KEY_BYTES 32
 #define NUMBER_WORDS_KEY 8
 #define NUMBER_ROUNDS 14
-#define WORDS_OF_EXPANSION 240
+#define WORDS_OF_EXPANSION 60
 typedef unsigned char BYTE;
 typedef unsigned int WORD;
 
