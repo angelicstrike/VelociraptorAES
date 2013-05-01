@@ -12,7 +12,7 @@ void TestSubBytes()
                                 {0x33, 0xA5, 0x95, 0x4B},
                                 {0x6E, 0x2D, 0x54, 0x7C}};
     SubBytes(testState);
-    int i,j;
+    int i, j;
     for(i = 0; i < STATE_COLUMNS; i++)
     {
         for(j = 0; j < STATE_ROWS; j++)
@@ -107,12 +107,24 @@ void TestShiftRows()
 
 void TestMixColumns()
 {
-    BYTE bytes[4][4] =
-    { {0x00, 0x01, 0x02, 0x03},
-      {0x05, 0x06, 0x07, 0x04},
-      {0x0a, 0x0b, 0x08, 0x09},
-      {0x0f, 0x0c, 0x0d, 0x0e} };
 
+       //2c21a820306f154ab712c75eee0da04f
+    BYTE bytes[4][4] =
+    { {0x2c, 0x21, 0xa8, 0x20},
+      {0x30, 0x6f, 0x15, 0x4a},
+      {0xb7, 0x12, 0xc7, 0x5e},
+      {0xee, 0x0d, 0xa0, 0x4f} };
+    BYTE original[4][4];
+    memcpy(*original, *bytes, 16);
+
+    printState(bytes);
+    MixColumns(bytes);
+    InvMixColumns(bytes);
+    printState(bytes);
+
+    if (memcmp(*bytes, *original, 16))
+        printf("MixColumns and its inverse are not inverses.\n");
+/*
     BYTE MixCheck[8] =
     {(0x00<<1)^(0x05<<1)^0x05^0x0a^0x0f, 
      (0x01<<1)^(0x06<<1)^0x06^0x0b^0x0c,
@@ -130,6 +142,7 @@ void TestMixColumns()
       {0x0a, 0x0b, 0x08, 0x09},
       {0x0f, 0x0c, 0x0d, 0x0e} };
 
+
     MixColumns(bytes);
     if (memcmp(*bytes, MixCheck, 8) == 0)
         printf("Mix Columns Success! (Two Row Test)\n");
@@ -141,6 +154,7 @@ void TestMixColumns()
         printf("Inverse Mix Columns Success!\n");
     else
         printf("Inverse Mix Columns Failure.\n");
+        */
 }
 
 //since SubBytes and InvSubBytes are Inverses of each other,
@@ -153,11 +167,26 @@ void TestInvSubBytes()
                             {0x66, 0x29, 0xAD, 0xCC},
                             {0x45, 0xFA, 0xFD, 0x01}};
 
-    /*BYTE SubBytesState[4][4] = {{0x8C, 0xA6, 0xB1, 0xEE},i
+    BYTE startState[4][4] = {{0xF0, 0xc5, 0x56, 0x99},
+                            {0x00, 0xFF, 0x9C, 0x53},
+                            {0x66, 0x29, 0xAD, 0xCC},
+                            {0x45, 0xFA, 0xFD, 0x01}};
+
+    for (int i = 0; i < 16; i++)
+        SubBytes(testState);
+
+    for (int j = 0; j < 16; j++)
+        InvSubBytes(testState);
+
+    if (memcmp(*testState, *startState, 16) != 0)
+        printf("Sub Bytes and Invert Sub Bytes are not inverses\n");
+
+/*
+    BYTE SubBytesState[4][4] = {{0x8C, 0xA6, 0xB1, 0xEE},i
                                 {0x63, 0x16, 0xDE, 0xED},
                                 {0x33, 0xA5, 0x95, 0x4B},
                                 {0x6E, 0x2D, 0x54, 0x7C}};
-    */
+                                */
     BYTE InvSubBytesState[4][4] = {{0x17, 0x07, 0xB9, 0xF9}, 
                                    {0x52, 0x7D, 0x1C, 0x50}, 
                                    {0xD3, 0x4C, 0x18, 0x27}, 
@@ -185,26 +214,30 @@ void TestInvSubBytes()
 
 }
 
-void TestEncryption()
+void TestAES1()
 {
-    char* plainText = "00112233445566778899aabbccddeeff\0";
-    char* cipherKey = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f\0";
-    const char* const cipherAnswer = "8ea2b7ca516745bfeafc49904b496089";
+    char plainText[]   = "00112233445566778899aabbccddeeff";
+    char cipherKey[]   = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+
+    BYTE cipherAnswer[16] = 
+    { 0x8e, 0xa2, 0xb7, 0xca,
+      0x51, 0x67, 0x45, 0xbf,
+      0xea, 0xfc, 0x49, 0x90,
+      0x4b, 0x49, 0x60, 0x89 };
+
     char* pos = plainText;
-    BYTE  encryptionOutput[32];
 
     BYTE state[STATE_ROWS][STATE_COLUMNS];
     BYTE out[STATE_ROWS][STATE_COLUMNS];
+    BYTE out2[STATE_ROWS][STATE_COLUMNS];
     BYTE cipherKeyArray[KEY_BYTES];
 
     for(int i = 0; i < STATE_ROWS; i++)
-    {
         for(int j = 0; j < STATE_COLUMNS; j++)
         {
             sscanf(pos, "%02hhx", &state[j][i]);
             pos += 2;
         }
-    }
 
     pos = cipherKey;
     for(int k = 0; k < KEY_BYTES; k++)
@@ -213,23 +246,30 @@ void TestEncryption()
         pos += 2;
     }
 
-    encrypt(state, out, cipherKeyArray);
-
+    printf("\nOriginal Block...\n");
     for(int i = 0; i < STATE_ROWS; i++)
-    {
         for(int j = 0; j < STATE_COLUMNS; j++)
-        {
-            encryptionOutput[4*i + j] = out[j][i];
-            //for now, manually comparing the values, since cipherAnswer is somehow getting it's value
-            //changed on runtime.
-            //But hey, it matches the example given in the NIST documentation, so there's that
-            printf("%x", encryptionOutput[4*i + j]);
-        }
-    }
-    printf("\n");
+            printf("%.2x", state[j][i]);
+    printf("\n\n");
+ 
+    printf("Correct Encryption...\n");
+    for (int i = 0; i < STATE_ROWS*STATE_COLUMNS; i++)
+        printf("%.2x", cipherAnswer[i]);
+    printf("\n\n");
+
+    printf("Encryption Result...\n");
+    encrypt(state, out, cipherKeyArray);
+    for(int i = 0; i < STATE_ROWS; i++)
+        for(int j = 0; j < STATE_COLUMNS; j++)
+            printf("%.2x", out[j][i]);
+    printf("\n\n");
+
+    printf("Decryption Result...\n");
+    decrypt(out, out2, cipherKeyArray);
+    for(int i = 0; i < STATE_ROWS; i++)
+        for(int j = 0; j < STATE_COLUMNS; j++)
+            printf("%.2x", out2[j][i]);
+    printf("\n\n");
+
 }
 
-void TestDecrypt()
-{
-
-}

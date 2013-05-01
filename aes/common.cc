@@ -2,8 +2,11 @@
 #include "databoxes.h"
 #include <stdio.h>
 
+
+
 void SubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    ;//printf("Sub Bytes\n");
     int i, j;
     unsigned char x, y;
     for(i = 0; i < STATE_COLUMNS; i++)
@@ -19,6 +22,7 @@ void SubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
 
 void ShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    ;//printf("Shift Rows\n");
     int temp[4];
     for (int row = 1; row < STATE_ROWS; row++)
     {
@@ -32,6 +36,7 @@ void ShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS])
 
 void InvShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    ;//printf("Invert Shift Rows\n");
     int temp[4];
     for (int row = 1; row < STATE_ROWS; row++)
     {
@@ -45,6 +50,7 @@ void InvShiftRows(BYTE state[STATE_ROWS][STATE_COLUMNS])
 
 void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    ;//printf("Mix Columns\n");
     BYTE temp[4];
 
     // AES chosen modulus when values exceed 255
@@ -65,9 +71,17 @@ void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
                 if (ColMixer[row][i]&2)
                     result ^= (temp[i]<<1);
             }
-
+            
+            if (result >= 1<<12)
+                result ^= (modulo<<4);
+            if (result >= 1<<11)
+                result ^= (modulo<<3);
+            if (result >= 1<<10)
+                result ^= (modulo<<2);
+            if (result >= 1<<9)
+                result ^= (modulo<<1);
             if (result >= 1<<8)
-                result ^= modulo;
+                result ^= (modulo);
 
             state[row][col] = result;
         }
@@ -76,6 +90,7 @@ void MixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 
 void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    ;//printf("Inverse Mix Columns\n");
     BYTE temp[4];
 
     // AES chosen modulus when values exceed 255
@@ -101,8 +116,16 @@ void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
                     result ^= temp[i]<<3;
             }
 
+            if (result >= 1<<12)
+                result ^= (modulo<<4);
+            if (result >= 1<<11)
+                result ^= (modulo<<3);
+            if (result >= 1<<10)
+                result ^= (modulo<<2);
+            if (result >= 1<<9)
+                result ^= (modulo<<1);
             if (result >= 1<<8)
-                result ^= modulo;
+                result ^= (modulo);
 
             state[row][col] = result;
         }
@@ -111,6 +134,7 @@ void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS])
 
 void AddRoundKeys(WORD keys[WORDS_OF_EXPANSION], BYTE state[STATE_ROWS][STATE_COLUMNS], int round)
 {
+    ;//printf("Add Round Keys %i\n", round);
     int i;
     for(i = 0; i < STATE_COLUMNS; i++)
     {
@@ -185,6 +209,7 @@ unsigned int RotWord(WORD word)
 
 void InvSubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
 {
+    ;//printf("Inverse Sub Bytes\n");
     int i, j;
     unsigned char x,y;
 
@@ -197,4 +222,13 @@ void InvSubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS])
             state[i][j] = inv_s[x][y];
         }
     }    
+}
+
+void printState(BYTE state[STATE_ROWS][STATE_COLUMNS])
+{
+    for(int i = 0; i < STATE_ROWS; i++)
+        for(int j = 0; j < STATE_COLUMNS; j++)
+            printf("%.2x", state[j][i]);
+    printf("\n");
+
 }

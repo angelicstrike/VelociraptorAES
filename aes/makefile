@@ -1,8 +1,9 @@
 CFLAGS=-Wall -Wextra
-CC=gcc
+CC=g++
+SOURCE=main.cc encrypt.cc decrypt.cc common.cc aesTest.cc
 
 test:
-	$(CC) $(CFLAGS) -o test main.cc encrypt.cc common.cc aesTest.cc
+	$(CC) $(CFLAGS) -o test $(SOURCE)
 
 clean:
 	rm -f test *.o

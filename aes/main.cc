@@ -4,9 +4,9 @@ int main()
 {
     /*TestSubBytes();
     TestKeyExpansion();
-    TestShiftRows();
-    TestMixColumns();
-    TestInvSubBytes();*/
-    TestEncryption();
+    TestShiftRows();*/
+    //TestMixColumns();
+    //TestInvSubBytes();
+    TestAES1();
     return 0;
 }

@@ -25,5 +25,8 @@ void InvMixColumns(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 void InvSubBytes(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 
 void encrypt(BYTE in[STATE_ROWS][STATE_COLUMNS], BYTE out[STATE_ROWS][STATE_COLUMNS], BYTE cipherKey[KEY_BYTES]);
+void decrypt(BYTE in[STATE_ROWS][STATE_COLUMNS], BYTE out[STATE_ROWS][STATE_COLUMNS], BYTE cipherKey[KEY_BYTES]);
+
+void printState(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 
 #endif
