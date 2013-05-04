@@ -13,7 +13,7 @@ class ClientThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        print('Received connection:'), self.details [0]
+        print('Received connection:'), self.details[0]
         self.channel.send(welcomeMessage)
         while(True):
             message = self.channel.recv(1024)
@@ -22,7 +22,7 @@ class ClientThread(threading.Thread):
             else:
                 print(message.decode('UTF-8'))
         #self.channel.close()
-        print('Closed connection:'), self.details [0]
+        print('Closed connection:'), self.details[0]
 
 signal.signal(signal.SIGINT, signal.SIG_IGN)
 
