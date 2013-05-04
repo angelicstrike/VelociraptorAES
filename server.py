@@ -2,6 +2,7 @@
 import pickle
 import socket
 import threading
+import signal
 
 welcomeMessage = pickle.dumps("Connection established")
 
@@ -22,6 +23,8 @@ class ClientThread(threading.Thread):
                 print(message.decode('UTF-8'))
         #self.channel.close()
         print('Closed connection:'), self.details [0]
+
+signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 server = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
 server.bind(( '', 65535))
