@@ -10,7 +10,7 @@ Where host is the IP where the server is located, the port is the port over whic
 The username is purely for identification and can be anything you want.
 
 <h2>Requirements</h2>
-python3
+python3, unix-like system.
 
 <h2>Description</h2>
 A server-client chat protocol that uses AES-256 for secure communication.
@@ -20,5 +20,6 @@ Dues to bad initial design, the messages are only sent and received whenever a n
 
 Another limitation is the issue with AES working with the server and client, as right now it does not fully encrypt and decrypt the communication.
 
+To kill the server, type pkill Python in a terminal.
 <h2>Members</h2>
 James Gross, Matthew O'Neil, Michael Dunn, Lukas Lozovski
