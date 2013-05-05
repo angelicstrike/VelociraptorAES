@@ -1,22 +1,30 @@
 #!/usr/bin/env python3
-import pickle
 import socket
 import threading
-import time
 import sys
+import signal
+
+HOST = sys.argv[1]
+PORT = sys.argv[2]
+USER = sys.argv[3]
 
 class ConnectionThread(threading.Thread):
     def run(self):
+        print("Connection established")
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect(('localhost', 65535))
+        client.connect((HOST, int(PORT)))
+        # client.send(bytes(USER + ' connected', 'UTF-8'))
+        print("To quit, type /quit.")
 
-        print(pickle.loads(client.recv(1024)))
-        while True:
-            message = input("Send message: ")
-            try:
-                client.send(bytes(message, 'UTF-8'))
-            except KeyboardInterrupt:
-                client.close()
-        client.close()
+        while(True):
+            message = input("Send: ")
+            received = client.recv(1024)
+            print('Received: ' + received.decode('UTF-8'))
+
+            if "/quit" in message:
+                break
+            else:
+                client.send(bytes(message + ' ', 'UTF-8'))
+        sys.exit(0)
 
 ConnectionThread().start()
