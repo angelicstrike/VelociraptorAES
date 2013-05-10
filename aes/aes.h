@@ -29,4 +29,6 @@ void decrypt(BYTE in[STATE_ROWS][STATE_COLUMNS], BYTE out[STATE_ROWS][STATE_COLU
 
 void printState(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 
+BYTE** encryptMessage(char* message, BYTE cipherKey[KEY_BYTES]);
+
 #endif
