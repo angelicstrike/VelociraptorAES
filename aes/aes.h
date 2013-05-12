@@ -29,6 +29,8 @@ void decrypt(BYTE in[STATE_ROWS][STATE_COLUMNS], BYTE out[STATE_ROWS][STATE_COLU
 
 void printState(BYTE state[STATE_ROWS][STATE_COLUMNS]);
 
-BYTE** encryptMessage(char* message, BYTE cipherKey[KEY_BYTES]);
+BYTE* EncryptMessage(const char* message, BYTE cipherKey[KEY_BYTES]);
+BYTE* DecryptMessage(char* message, BYTE cipherKey[KEY_BYTES]);
+void FreeCipherString();
 
 #endif

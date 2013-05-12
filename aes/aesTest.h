@@ -16,4 +16,7 @@ void TestInvSubBytes();
 
 void TestAES1();
 
+void TestEncryptWrapper();
+void TestDecryptWrapper();
+
 #endif

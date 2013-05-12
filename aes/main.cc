@@ -7,6 +7,7 @@ int main()
     TestShiftRows();*/
     //TestMixColumns();
     //TestInvSubBytes();
-    TestAES1();
+    //TestAES1();
+    TestEncryptWrapper();
     return 0;
 }
