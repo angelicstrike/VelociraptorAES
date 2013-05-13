@@ -2,7 +2,6 @@ import cPickle
 import socket
 import struct
 import hashlib
-from Crypto.Cipher import AES
 
 #marshall = cPickle.dumps
 #unmarshall = cPickle.loads
