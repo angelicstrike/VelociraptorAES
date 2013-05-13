@@ -35,7 +35,6 @@ def DecryptAES256(ctString, key):
     for i in range(0, len(cipherText)):
         ptString += generateString16(plaintext[i])
 
-    print ptString
     return ptString
 
 def encrypt(pt, ct, key):
