@@ -41,3 +41,6 @@ decryphex = I2H_2D(decrypted)
 print plainhex
 print encryphex
 print decryphex
+
+blocks = generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GOOD JOB")
+print blocks

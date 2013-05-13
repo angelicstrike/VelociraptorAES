@@ -1,6 +1,15 @@
 from common import *
 from tools import *
 
+
+# Takes an input string and key string, outputs encrypted string
+def EncryptAES(ptString, ctString, key):
+    return 0
+
+# Takes encrypted string and key string, outputs decrypted string
+def DecryptAES(ctString, ptString, key):
+    return 0
+
 def encrypt(pt, ct, key):
 
     expandedKeys = keyExpansion(key)

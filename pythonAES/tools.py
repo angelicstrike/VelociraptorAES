@@ -7,3 +7,28 @@ def I2H_2D(ints):
         newInts.append(newRow)
     return newInts
 
+def generateKey256(string):
+    cipherKey = []
+    for i in range(0, 32):
+        cipherKey.append(ord(string[i%len(string)]))
+    return cipherKey
+
+def generateBlocks128(string):
+    blockCount = len(string)/16 + 1
+    blocks = []
+    for i in range(0, blockCount-1):
+        block = []
+        for j in range(0, 4):
+            row = []
+            for k in range(0, 4):
+                row.append(ord(string[16*i+4*j+k]))
+            block.append(row)
+        blocks.append(block)
+
+    remaining = string[16*(blockCount-1): len(string)]
+    finalBlock = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+    for i in range(0, len(remaining)):
+        finalBlock[i/4][i%4] = ord(remaining[i])
+
+    blocks.append(finalBlock)
+    return blocks
