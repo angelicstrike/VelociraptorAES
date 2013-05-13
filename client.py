@@ -11,23 +11,23 @@ pathKellos = directory + '/stringReturnTest2.so'
 
 aes = ctypes.cdll.LoadLibrary(pathKellos)
 
-def callEncrypt(string,key)
+def callEncrypt(string,key):
     c_stringToEncrypt = ctypes.c_char_p(string)
-	c_keyString = ctypes.c_char_p(key)
-	foo = aes.EncryptMessage(c_stringToEncrypt,c_keyString)
-	returnCopy = ctypes.c_char_p(foo).value
-	del(foo)
-	aes.FreeCipherString()
-	return returnCopy
+    c_keyString = ctypes.c_char_p(key)
+    foo = aes.EncryptMessage(c_stringToEncrypt,c_keyString)
+    returnCopy = ctypes.c_char_p(foo).value
+    del(foo)
+    aes.FreeCipherString()
+    return returnCopy
 
-def callDecrypt(string,key)
+def callDecrypt(string,key):
     c_stringToDecrypt = ctypes.c_char_p(string)
-	c_keyString = ctypes.c_char_p(key)
-	foo = aes.decrypt(c_stringToDecrypt,c_keyString)
-	returnCopy = ctypes.c_char_p(foo).value
-	del(foo)
-	hello.FreeCipherString()
-	return returnCopy
+    c_keyString = ctypes.c_char_p(key)
+    foo = aes.decrypt(c_stringToDecrypt,c_keyString)
+    returnCopy = ctypes.c_char_p(foo).value
+    del(foo)
+    hello.FreeCipherString()
+    return returnCopy
 
 HOST = sys.argv[1]
 PORT = sys.argv[2]
