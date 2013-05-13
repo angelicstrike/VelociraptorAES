@@ -25,10 +25,22 @@ def generateBlocks128(string):
             block.append(row)
         blocks.append(block)
 
-    remaining = string[16*(blockCount-1): len(string)]
-    finalBlock = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
-    for i in range(0, len(remaining)):
-        finalBlock[i/4][i%4] = ord(remaining[i])
+    if len(string) % 16 != 0:
+        remaining = string[16*(blockCount-1): len(string)]
+        finalBlock = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+        for i in range(0, len(remaining)):
+            finalBlock[i/4][i%4] = ord(remaining[i])
+        blocks.append(finalBlock)
 
-    blocks.append(finalBlock)
     return blocks
+
+def generateString16(blocks):
+    string = []
+    for block in blocks:
+        for row in block:
+            for value in row:
+                print value
+                string.append(chr(value))
+
+    return ''.join(string)
+    

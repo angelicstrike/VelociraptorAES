@@ -42,5 +42,6 @@ print plainhex
 print encryphex
 print decryphex
 
-blocks = generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GOOD JOB")
-print blocks
+print generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GO")
+print generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GOO")
+print generateString16(generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GOO"))
