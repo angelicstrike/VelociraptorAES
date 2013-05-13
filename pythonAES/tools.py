@@ -36,10 +36,15 @@ def generateBlocks128(string):
 
 def generateString16(blocks):
     string = []
-    for block in blocks:
-        for row in block:
+    if len(blocks) == 1:
+        for block in blocks:
+            for row in block:
+                for value in row:
+                    string.append(chr(value))
+
+    elif len(blocks) > 1:
+        for row in blocks:
             for value in row:
-                print value
                 string.append(chr(value))
 
     return ''.join(string)

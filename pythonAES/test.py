@@ -38,10 +38,18 @@ plainhex  = I2H_2D(plainText)
 encryphex = I2H_2D(encrypted)
 decryphex = I2H_2D(decrypted)
 
-print plainhex
-print encryphex
-print decryphex
+#print plainhex
+#print encryphex
+#print decryphex
 
-print generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GO")
-print generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GOO")
-print generateString16(generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GOO"))
+original = "bear!"
+key = "kitties"
+print original
+encrypted = EncryptAES256(original, key);
+print encrypted
+decrypted = DecryptAES256(encrypted, key)
+print decrypted
+
+#print generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GO")
+#print generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GOO")
+#print generateString16(generateBlocks128("WHAT ARE YOU DOING OMG THIS IS CRAZY WHOA LOL GOO"))

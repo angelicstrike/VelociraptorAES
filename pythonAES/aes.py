@@ -1,14 +1,42 @@
 from common import *
 from tools import *
 
-
 # Takes an input string and key string, outputs encrypted string
-def EncryptAES(ptString, ctString, key):
-    return 0
+def EncryptAES256(ptString, key):
+    cipherKey = generateKey256(key)
+    plaintext = generateBlocks128(ptString)
 
-# Takes encrypted string and key string, outputs decrypted string
-def DecryptAES(ctString, ptString, key):
-    return 0
+    cipherText = []
+    for i in range(0, len(plaintext)):
+        cipherText.append([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
+
+    for i in range(0, len(plaintext)):
+        encrypt(plaintext[i], cipherText[i], cipherKey)
+
+    ctString = ""
+    for i in range(0, len(plaintext)):
+        ctString += generateString16(cipherText[i])
+
+    return ctString
+
+
+def DecryptAES256(ctString, key):
+    cipherKey = generateKey256(key)
+    cipherText = generateBlocks128(ctString)
+
+    plaintext = []
+    for i in range(0, len(cipherText)):
+        plaintext.append([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
+
+    for i in range(0, len(cipherText)):
+        decrypt(cipherText[i], plaintext[i], cipherKey)
+
+    ptString = ""
+    for i in range(0, len(cipherText)):
+        ptString += generateString16(plaintext[i])
+
+    print ptString
+    return ptString
 
 def encrypt(pt, ct, key):
 
