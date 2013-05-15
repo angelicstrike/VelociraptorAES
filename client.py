@@ -1,55 +1,76 @@
-#!/usr/bin/env python3
 import socket
-import threading
 import sys
-import signal
-import ctypes
-import os
+import select
+import re
+from communication import send, receive, jumble
+from aes import EncryptAES256, DecryptAES256
 
-directory = os.getcwd()
-pathKellos = directory + '/stringReturnTest2.so'
+BUFSIZ = 1024
 
-aes = ctypes.cdll.LoadLibrary(pathKellos)
+class ChatClient(object):
+    """ A simple command line chat client using select """
 
-def callEncrypt(string,key):
-    c_stringToEncrypt = ctypes.c_char_p(string)
-    c_keyString = ctypes.c_char_p(key)
-    foo = aes.EncryptMessage(c_stringToEncrypt,c_keyString)
-    returnCopy = ctypes.c_char_p(foo).value
-    del(foo)
-    aes.FreeCipherString()
-    return returnCopy
+    def __init__(self, name, host, port, key):
+        self.name = name
+        self.flag = False
+        self.port = int(port)
+        self.host = host
+        self.key = key
+        try:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((host, self.port))
+            print 'Connected to chat server@%d' % self.port
+            # Send my name...
+            send(self.sock,'NAME: ' + self.name) 
+            data = receive(self.sock)
+            # Contains client address, set it
+            addr = data.split('CLIENT: ')[1]
+            self.prompt = '@'.join((self.name, addr)) + '> '
+        except socket.error, e:
+            print 'Could not connect to chat server @%d' % self.port
+            sys.exit(1)
 
-def callDecrypt(string,key):
-    c_stringToDecrypt = ctypes.c_char_p(string)
-    c_keyString = ctypes.c_char_p(key)
-    foo = aes.decrypt(c_stringToDecrypt,c_keyString)
-    returnCopy = ctypes.c_char_p(foo).value
-    del(foo)
-    hello.FreeCipherString()
-    return returnCopy
+    def cmdloop(self):
 
-HOST = sys.argv[1]
-PORT = sys.argv[2]
-USER = sys.argv[3]
+        while not self.flag:
+            try:
+                sys.stdout.write(self.prompt)
+                sys.stdout.flush()
 
-class ConnectionThread(threading.Thread):
-    def run(self):
-        print("Connection established")
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect((HOST, int(PORT)))
-        # client.send(bytes(USER + ' connected', 'UTF-8'))
-        print("To quit, type /quit.")
-
-        while(True):
-            message = input("Send: ")
-            received = client.recv(1024)
-            print('Received: ' + received.decode('UTF-8'))
-
-            if "/quit" in message:
+                inputready, outputready,exceptrdy = select.select([0, self.sock], [],[])
+                
+                for i in inputready:
+                    if i == 0:
+                        data = sys.stdin.readline().strip()
+                        if data:
+                            encryptMsg =  EncryptAES256(data, self.key)
+                            send(self.sock, encryptMsg)
+                    elif i == self.sock:
+                        data = receive(self.sock)
+                        if re.search('>>',data) != None:
+                            fromC = data.split('>> ')[0]
+                            msg = data.split('>> ')[1]
+                            decryptMsg = DecryptAES256(msg, self.key)
+                            data = fromC + '>> ' + decryptMsg
+                        if not data:
+                            print 'Shutting down.'
+                            self.flag = True
+                            break
+                        else:
+                            sys.stdout.write(data + '\n')
+                            sys.stdout.flush()
+                            
+            except KeyboardInterrupt:
+                print 'Interrupted.'
+                self.sock.close()
                 break
-            else:
-                client.send(bytes(message + ' ', 'UTF-8'))
-        sys.exit(0)
+            
+            
+if __name__ == "__main__":
+    import sys
 
-ConnectionThread().start()
+    if len(sys.argv)<4:
+        sys.exit('Usage: %s chatid host portno key' % sys.argv[0])
+        
+    client = ChatClient(sys.argv[1],sys.argv[2], int(sys.argv[3]), sys.argv[4])
+    client.cmdloop()

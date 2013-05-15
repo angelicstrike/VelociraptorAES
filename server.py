@@ -1,41 +1,121 @@
-#!/usr/bin/env python3
+import select
 import socket
-import threading
-import signal
 import sys
+import signal
+from communication import send, receive
 
-PORT = sys.argv[1]
+BUFSIZ = 1024
 
-class ClientThread(threading.Thread):
-    def __init__(self, channel, details):
-        self.channel = channel
-        self.details = details
-        threading.Thread.__init__(self)
 
-    def run(self):
-        print('Received connection'), self.details[0]
-        # self.channel.send(bytes("Connection established", 'UTF-8'))
+class ChatServer(object):
+    """ Simple chat server using select """
+    
+    def __init__(self, port=3490, backlog=5):
+        self.clients = 0
+        # Client map
+        self.clientmap = {}
+        # Output socket list
+        self.outputs = []
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server.bind(('',port))
+        print 'Listening to port',port,'...'
+        self.server.listen(backlog)
+        # Trap keyboard interrupts
+        signal.signal(signal.SIGINT, self.sighandler)
+        
+    def sighandler(self, signum, frame):
+        # Close the server
+        print 'Shutting down server...'
+        # Close existing client sockets
+        for o in self.outputs:
+            o.close()
+            
+        self.server.close()
 
-        while(True):
+    def getname(self, client):
+
+        # Return the printable name of the
+        # client, given its socket...
+        info = self.clientmap[client]
+        host, name = info[0][0], info[1]
+        return '@'.join((name, host))
+        
+    def serve(self):
+        
+        inputs = [self.server,sys.stdin]
+        self.outputs = []
+
+        running = 1
+
+        while running:
+
             try:
-                send = input("Send: ")
-                self.channel.send(bytes(send + ' ', 'UTF-8'))
-                message = self.channel.recv(1024)
-                if "/quit" in send:
-                    break
+                inputready,outputready,exceptready = select.select(inputs, self.outputs, [])
+            except select.error, e:
+                break
+
+            for s in inputready:
+
+                if s == self.server:
+                    # handle the server socket
+                    client, address = self.server.accept()
+                    print 'chatserver: got connection %d from %s' % (client.fileno(), address)
+                    # Read the login name
+                    cname = receive(client).split('NAME: ')[1]
+                    
+                    # Compute client name and send back
+                    self.clients += 1
+                    send(client, 'CLIENT: ' + str(address[0]))
+                    inputs.append(client)
+
+                    self.clientmap[client] = (address, cname)
+                    # Send joining information to other clients
+                    msg = '\n(Connected: New client (%d) from %s)' % (self.clients, self.getname(client))
+                    for o in self.outputs:
+                        # o.send(msg)
+                        send(o, msg)
+                    
+                    self.outputs.append(client)
+
+                elif s == sys.stdin:
+                    # handle standard input
+                    junk = sys.stdin.readline()
+                    running = 0
                 else:
-                    print('Received: '+ message.decode('UTF-8'))
-            except (BrokenPipeError, ConnectionResetError):
-                sys.exit(0)
-        #self.channel.close()
-        sys.exit(0)
+                    # handle all other sockets
+                    try:
+                        # data = s.recv(BUFSIZ)
+                        data = receive(s)
+                        if data:
+                            # Send as new client's message...
+                            msg = '\n#[' + self.getname(s) + ']>> ' + data
+                            # Send data to all except ourselves
+                            for o in self.outputs:
+                                if o != s:
+                                    # o.send(msg)
+                                    send(o, msg)
+                        else:
+                            print 'chatserver: %d hung up' % s.fileno()
+                            self.clients -= 1
+                            s.close()
+                            inputs.remove(s)
+                            self.outputs.remove(s)
 
-signal.signal(signal.SIGINT, signal.SIG_IGN)
+                            # Send client leaving information to others
+                            msg = '\n(Hung up: Client from %s)' % self.getname(s)
+                            for o in self.outputs:
+                                # o.send(msg)
+                                send(o, msg)
+                                
+                    except socket.error, e:
+                        # Remove
+                        inputs.remove(s)
+                        self.outputs.remove(s)
+                        
 
-server = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-server.bind(('', int(PORT)))
-server.listen(5)
 
-while True:
-    channel, details = server.accept()
-    ClientThread(channel, details).start()
+        self.server.close()
+
+if __name__ == "__main__":
+    ChatServer().serve()
